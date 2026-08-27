@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AptiMet Trainee Portal"
+description = "A responsive trainee-facing learning portal for IMD with course progress, assessments, announcements, skill development, and simulation entry points."
+version = "1.0.0"
+id = "artifacts/aptimet-trainee-portal"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25357
+
+[services.development]
+run = "pnpm --filter @workspace/aptimet-trainee-portal run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/aptimet-trainee-portal", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/aptimet-trainee-portal/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25357"
+BASE_PATH = "/"

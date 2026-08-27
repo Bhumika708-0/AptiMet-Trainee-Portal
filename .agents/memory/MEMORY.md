@@ -1,0 +1,1 @@
+- [AptiMet reference layout](aptimet-reference-layout.md) — keep the announcements rail visible at laptop width to preserve the supplied dashboard composition.

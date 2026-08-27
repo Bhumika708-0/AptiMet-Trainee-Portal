@@ -1,0 +1,118 @@
+# Replit Agent Follow-Up Prompt: AptiMet — Differentiator Features
+
+Paste this into Replit Agent AFTER your core app (login/dashboard/courses/quiz/certificate) is already working. Tell the agent: "My core app is already built and working — do NOT rebuild or restructure existing pages/routing. ADD these new features as new routes/components that integrate with the existing app."
+
+---
+
+## Prompt to paste into Replit Agent:
+
+My AptiMet trainee portal core flow (login, dashboard, courses, quiz, certificate) is already built and working. Do not modify or restructure existing pages, components, routing, or mock data files unless explicitly told to below. Add the following NEW features as additional routes/components, integrated into the existing navbar/dashboard so they're reachable, but without breaking anything that already works.
+
+### 1. Cyclone War Room — Live Decision Simulation (build this first, most important)
+
+**Route:** `/war-room`
+
+**Entry point:** Add a visually distinct card on the Dashboard: "🚨 Simulation: Cyclone Response" with a "Start Simulation" button that navigates to `/war-room`.
+
+**Screen layout:**
+- Full-screen takeover (hide navbar/sidebar while active)
+- Left/center: a simple map area — use an SVG or a static coastline illustration with an animated marker (CSS transition moving a dot along a path) representing the cyclone's position. Doesn't need to be a real map library — a stylized SVG is fine and looks clean.
+- Top: a countdown timer bar showing simulated time progressing (e.g., "T-6:00:00 to landfall" ticking down)
+- Right/bottom: a scrolling event log feed — new event text appears every few seconds automatically (e.g., "Wind speed increasing to 90 km/h", "Satellite imagery updated")
+
+**Scenario data:** Create a mock file `mockData/scenario.js` — an array of timed events:
+```js
+[
+  { time: 0, type: "info", text: "Cyclone forms 800km off coast" },
+  { time: 10, type: "info", text: "Wind speeds reach 90 km/h" },
+  { time: 20, type: "decision", 
+    prompt: "Landfall ETA updated to 18 hours. What warning level do you issue?",
+    options: [
+      { label: "Yellow Alert", weight: 2, feedback: "Too cautious for this timeline — experts issued Orange." },
+      { label: "Orange Alert", weight: 10, feedback: "Correct call — matches expert response." },
+      { label: "Red Alert", weight: 4, feedback: "Premature — may cause unnecessary panic at this stage." }
+    ]
+  },
+  // add 3-4 total decision points covering: warning level, evacuation zone choice, 
+  // official briefing timing, resource allocation
+]
+```
+
+**Behavior:**
+- Events play automatically on a timer (e.g., every 3-5 real seconds = advancing simulated time)
+- When a `decision` event is reached, PAUSE the timeline, show the prompt + option buttons, wait for trainee click
+- Clicking an option: log the choice, show brief feedback text, resume timeline after a short delay
+- Track all choices + their weights in component state
+
+**End screen (Scorecard) — this is the most important part, spend real effort here:**
+- Show total score (sum of weights out of max possible)
+- List each decision made, the trainee's choice, and the feedback text for that specific choice
+- A narrative-style summary line, e.g., "Your Orange Alert delayed the coastal warning relative to the fastest expert path — this timing gap is what the training modules below address."
+- "Recommended Module" section: link to a specific course from the existing course catalog (pick any 1-2 real course IDs from your mockData/courses.js) based on which decisions scored lowest
+- "Return to Dashboard" button
+
+---
+
+### 2. Forecast Duel
+
+**Route:** `/forecast-duel`
+
+**Entry point:** Add a card on Dashboard: "Forecast Duel — Test your call against history"
+
+**Screen layout:**
+- Show a "historical data snapshot" card: date, location, available data at the time (temperature, pressure, satellite description — can be text/mock stats, no real image needed)
+- Input area: trainee selects their forecast via a slider or dropdown (e.g., "Predicted rainfall: 0-50mm / 50-100mm / 100-150mm / 150mm+" or similar categorical choice relevant to the scenario)
+- "Submit Forecast" button
+
+**Data:** Create `mockData/historicalEvents.js` with 2-3 historical scenarios:
+```js
+[
+  {
+    id: 1,
+    date: "2023-06-15",
+    location: "Mumbai Coast",
+    snapshotData: "Pressure: 995 hPa, dropping. Cloud cover: 80%. Wind: 45 km/h onshore.",
+    actualOutcome: "120mm rainfall recorded",
+    officialForecast: "100-150mm predicted",
+    correctRange: "100-150mm"
+  }
+]
+```
+
+**On submit:**
+- Reveal a comparison view: trainee's guess vs. actual outcome vs. official IMD forecast at the time, side by side (3 cards or a simple bar comparison)
+- Show an accuracy badge ("Close match!" / "Off by one band" / etc. based on how close their range was to `correctRange`)
+- "Try Another Scenario" button cycles to the next mock event
+- "Back to Dashboard" button
+
+---
+
+### 3. Skill-Gap Dashboard
+
+**Route:** `/skill-gap`
+
+**Entry point:** Add to Profile page or Dashboard as "View My Skill Gaps" link/button
+
+**Layout:**
+- Use `recharts` to build a radar chart or grouped bar chart comparing:
+  - Trainee's current skill levels (from mock profile data, e.g., `{ forecasting: 6, dataAnalysis: 4, communication: 7 }` on a 0-10 scale)
+  - Target role's required skill levels (mock data, e.g., `{ forecasting: 9, dataAnalysis: 8, communication: 7 }`)
+- Below the chart: list the 2-3 biggest gaps as text ("Data Analysis: 4 points below target")
+- Each gap line has a "View recommended course" link that navigates to `/course/:id` for a relevant course from the existing catalog
+
+**Data:** Add `mockData/skillGaps.js` with the current vs. target skill objects.
+
+---
+
+## Integration checklist for the agent
+- Add nav links/cards for all 3 new features from the Dashboard (don't bury them — they should be visually prominent since they're the differentiating features)
+- Reuse the existing navbar/layout wrapper component for consistency, except War Room which is full-screen/immersive
+- Reuse existing course IDs from `mockData/courses.js` when linking "recommended module" — don't invent new courses unless none fit
+- Test that clicking into War Room and Forecast Duel and back to Dashboard doesn't break existing routing or state
+
+## Priority order if the agent needs to build incrementally
+1. Cyclone War Room (build this fully first — it's the centerpiece feature for judging)
+2. Forecast Duel
+3. Skill-Gap Dashboard
+
+Confirm Cyclone War Room is fully working end-to-end (timeline plays, decisions are clickable, scorecard displays correctly) before moving to the next feature.
