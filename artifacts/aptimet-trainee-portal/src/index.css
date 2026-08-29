@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -413,10 +413,26 @@ button { cursor: pointer; }
 .sidebar-shadow { box-shadow: 10px 0 28px rgba(22, 53, 83, .04); }
 .panel-shadow { box-shadow: 0 7px 18px rgba(22, 53, 83, .055); }
 .tiny-label { font-family: var(--app-font-mono); font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: #7a8a9d; }
+.font-display { font-family: 'Bricolage Grotesque', var(--app-font-sans), sans-serif; }
+.font-mono-ui { font-family: var(--app-font-mono); }
+.focus-ring { outline: none; }
+.focus-ring:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
 .rise { animation: rise .45s ease both; }
 .rise-2 { animation: rise .45s .08s ease both; }
 .rise-3 { animation: rise .45s .16s ease both; }
+.animate-rise-in { animation: rise .4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-breathe { animation: breathe 3.6s ease-in-out infinite; }
+
 @keyframes rise { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0.95; }
+}
+@keyframes rain-fall {
+  0% { transform: translateY(-40px) skewX(-14deg); }
+  100% { transform: translateY(105vh) skewX(-14deg); }
+}
+
 @media (min-width: 900px) {
   .app-frame { margin: 10px; min-height: calc(100dvh - 20px); border: 1px solid #aeb9c7; border-radius: 22px; overflow: hidden; }
 }
